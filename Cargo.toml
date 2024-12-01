@@ -2,6 +2,10 @@
 name = "advent_of_code_2024"
 version = "0.1.0"
 edition = "2021"
+license = "MIT"
+license-file = "LICENSE.txt"
+authors = ["Pietro Agnoli <pietro_agnoli@proton.me>"]
+description = "Solutions to the Advent of Code 2024"
 
 [[bin]]
 name = "day_01"
