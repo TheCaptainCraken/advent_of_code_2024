@@ -31,7 +31,7 @@ fn main() -> Result<()> {
 
     let mut valid_reports = 0;
     for report in reports {
-        let mut valid = (report.is_sorted() || report.is_sorted_by(|a, b| b <= a))
+        let valid = (report.is_sorted() || report.is_sorted_by(|a, b| b <= a))
             && report.windows(2).all(|numbers| {
                 (numbers[0] - numbers[1]).abs() <= 3 && (numbers[0] - numbers[1]).abs() >= 1
             });
