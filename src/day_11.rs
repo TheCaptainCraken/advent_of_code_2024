@@ -1,3 +1,5 @@
+use std::collections::HashMap;
+
 const INPUT: &str = include_str!("../data/day_11/input.txt");
 
 fn main() {
@@ -25,6 +27,8 @@ fn main() {
 
     println!("Part one: {}", parsed_input_first_part.len());
 
+    let mut cached_inputs = HashMap::new();
+
     let parsed_input_second_part = INPUT
         .split(' ')
         .map(|n| n.parse::<u128>().unwrap())
@@ -32,22 +36,32 @@ fn main() {
 
     let answer_second_part = parsed_input_second_part
         .iter()
-        .map(|n| recursive_count_baby(*n, 75))
+        .map(|n| recursive_count_baby(*n, 75, &mut cached_inputs))
         .sum::<u128>();
 
     println!("Part two: {}", answer_second_part);
 }
 
-fn recursive_count_baby(input: u128, depth: u8) -> u128 {
+fn recursive_count_baby(input: u128, depth: u8, cache: &mut HashMap<(u128, u8), u128>) -> u128 {
     if depth == 0 {
         1
     } else {
-        if let Some(n) = first_rule(input) {
-            recursive_count_baby(n, depth - 1)
+        if let Some(cached) = cache.get(&(input, depth)) {
+            return *cached;
+        } else if let Some(n) = first_rule(input) {
+            let result = recursive_count_baby(n, depth - 1, cache);
+            cache.insert((input, depth), result);
+            result
         } else if let Some(ns) = second_rule(input) {
-            recursive_count_baby(ns.0, depth - 1) + recursive_count_baby(ns.1, depth - 1)
+            let result = recursive_count_baby(ns.0, depth - 1, cache)
+                + recursive_count_baby(ns.1, depth - 1, cache);
+
+            cache.insert((input, depth), result);
+            result
         } else {
-            recursive_count_baby(third_rule(input), depth - 1)
+            let result = recursive_count_baby(third_rule(input), depth - 1, cache);
+            cache.insert((input, depth), result);
+            result
         }
     }
 }
